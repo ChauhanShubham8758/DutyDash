@@ -9,6 +9,8 @@ import {
   ScrollArea,
   Group,
   Avatar,
+  Popover,
+  HoverCard,
 } from "@mantine/core";
 import classes from "./TodoList.module.css";
 import cx from "clsx";
@@ -33,7 +35,7 @@ function TodoList() {
       const newTodo = {
         id: new Date().toLocaleTimeString(),
         name: inputValue,
-        completed: false
+        completed: false,
       };
       setTodos([...todos, newTodo]);
       setInputValue("");
@@ -46,7 +48,7 @@ function TodoList() {
   };
 
   const editTodo = (id) => {
-    const todoToEdit = todos.find(todo => todo.id === id);
+    const todoToEdit = todos.find((todo) => todo.id === id);
     if (todoToEdit) {
       setInputValue(todoToEdit.name);
       setEditingId(id);
@@ -54,37 +56,65 @@ function TodoList() {
   };
 
   const saveEdit = () => {
-    if (inputValue.trim() !== '') {
-      const editedTodos = todos.map(todo =>
+    if (inputValue.trim() !== "") {
+      const editedTodos = todos.map((todo) =>
         todo.id === editingId ? { ...todo, name: inputValue } : todo
       );
       setTodos(editedTodos);
-      setInputValue('');
+      setInputValue("");
       setEditingId(null);
     }
   };
 
   const completeTodo = (id) => {
-    const updatedTodos = todos.map(todo =>
+    const updatedTodos = todos.map((todo) =>
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     );
     setTodos(updatedTodos);
-  }
+  };
 
   const rows = todos.map((row) => (
     <Table.Tr key={row.id} className="row-todo">
       <Table.Td>{row.id}</Table.Td>
-      <Table.Td  style={{ textDecoration: row.completed ? 'line-through' : 'none' }}>{row.name}</Table.Td>
+      <Table.Td
+        style={{ textDecoration: row.completed ? "line-through" : "none" }}
+      >
+        {row.name}
+      </Table.Td>
       <Table.Td>
-        <Button onClick={() => deleteTodo(row.id)} variant="danger">
-          <Trash size={22} strokeWidth={2} color={"white"} />
-        </Button>
-        <Button onClick={() => editTodo(row.id)} variant="edit">
-          <Edit size={22} strokeWidth={1.5} color={"white"} />
-        </Button>
-        <Button onClick={() => completeTodo(row.id)} variant="complete">
-          <MdOutlineTaskAlt accentHeight={100} />
-        </Button>
+        {/*-------pop hover mantine-----------*/}
+        <HoverCard width={280} shadow="md">
+          <HoverCard.Target>
+            <Button onClick={() => deleteTodo(row.id)} variant="danger">
+              <Trash size={22} strokeWidth={2} color={"white"} />
+            </Button>
+          </HoverCard.Target>
+          <HoverCard.Dropdown>
+            <Text size="sm">Delete this toDo</Text>
+          </HoverCard.Dropdown>
+        </HoverCard>
+
+        <HoverCard width={280} shadow="md">
+          <HoverCard.Target>
+            <Button onClick={() => editTodo(row.id)} variant="edit">
+              <Edit size={22} strokeWidth={1.5} color={"white"} />
+            </Button>
+          </HoverCard.Target>
+          <HoverCard.Dropdown>
+            <Text size="sm">Edit this toDo</Text>
+          </HoverCard.Dropdown>
+        </HoverCard>
+
+        <HoverCard width={280} shadow="md">
+          <HoverCard.Target>
+            <Button onClick={() => completeTodo(row.id)} variant="complete">
+              <MdOutlineTaskAlt accentHeight={100} />
+            </Button>
+          </HoverCard.Target>
+          <HoverCard.Dropdown>
+            <Text size="sm">Complete this toDo</Text>
+          </HoverCard.Dropdown>
+        </HoverCard>
       </Table.Td>
     </Table.Tr>
   ));
@@ -109,18 +139,21 @@ function TodoList() {
         />
 
         {editingId === null ? (
-        <Button className="todo-add-btn" onClick={addTodo} variant="primary">
-        Add Task
-      </Button>
-      ) : (
-        <Button className="todo-add-btn" onClick={saveEdit} variant="primary">
-          Save
-        </Button>
-      )}
+          <Button className="todo-add-btn" onClick={addTodo} variant="primary">
+            Add Task
+          </Button>
+        ) : (
+          <Button className="todo-add-btn" onClick={saveEdit} variant="primary">
+            Save
+          </Button>
+        )}
       </div>
-      
+
       <div className="scroll-todo">
-        <ScrollArea h={300} onScrollPositionChange={({ y }) => setScrolled(y !== 0)} >
+        <ScrollArea
+          h={300}
+          onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
+        >
           <Table miw={700}>
             <Table.Thead
               className={cx(tableClasses.header, {
