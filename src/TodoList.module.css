@@ -1,47 +1,52 @@
 .root {
-    position: relative;
-    width: 20%;
-    margin-top: 0 !important;
+  position: relative;
+  width: 20%;
+  margin-top: 0 !important;
+}
+
+.label {
+  position: absolute;
+  z-index: 2;
+  top: 7px;
+  left: var(--mantine-spacing-sm);
+  pointer-events: none;
+  color: var(--mantine-color-gray-5);
+  transition: transform 150ms ease, font-size 150ms ease, color 150ms ease;
+
+  &[data-floating] {
+    transform: translate(calc(var(--mantine-spacing-sm) * -1), -28px);
+    font-size: var(--mantine-font-size-xs);
+    font-weight: 500;
+    color: var(--mantine-color-black);
   }
-  
-  .label {
-    position: absolute;
-    z-index: 2;
-    top: 7px;
-    left: var(--mantine-spacing-sm);
-    pointer-events: none;
-    color: var(--mantine-color-gray-5);
-    transition:
-      transform 150ms ease,
-      font-size 150ms ease,
-      color 150ms ease;
-  
-    &[data-floating] {
-      transform: translate(calc(var(--mantine-spacing-sm) * -1), -28px);
-      font-size: var(--mantine-font-size-xs);
-      font-weight: 500;
-      color: var(--mantine-color-black);
-    }
+}
+
+.required {
+  transition: opacity 150ms ease;
+  opacity: 0;
+
+  [data-floating] & {
+    opacity: 1;
   }
-  
-  .required {
-    transition: opacity 150ms ease;
-    opacity: 0;
-  
-    [data-floating] & {
-      opacity: 1;
-    }
+}
+
+.input {
+  &::placeholder {
+    transition: color 150ms ease;
+    color: transparent;
   }
 
-  .input {
+  &[data-floating] {
     &::placeholder {
-      transition: color 150ms ease;
-      color: transparent;
-    }
-  
-    &[data-floating] {
-      &::placeholder {
-        color: var(--mantine-color-placeholder);
-      }
+      color: var(--mantine-color-placeholder);
     }
   }
+}
+
+@media (max-width: 959px) {
+  .root {
+    position: relative;
+    width: auto !important;
+    margin-top: 0 !important;
+  }
+}

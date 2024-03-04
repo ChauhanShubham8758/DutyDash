@@ -2,21 +2,13 @@ import React, { useState } from "react";
 import {
   Button,
   TextInput,
-  rem,
   Text,
   Table,
-  Checkbox,
   ScrollArea,
-  Group,
-  Avatar,
-  Popover,
   HoverCard,
 } from "@mantine/core";
 import classes from "./TodoList.module.css";
 import cx from "clsx";
-import { useListState } from "@mantine/hooks";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { IconGripVertical } from "@tabler/icons-react";
 import tableClasses from "./TableScrollArea.module.css";
 import { Trash, Edit } from "tabler-icons-react";
 import { MdOutlineTaskAlt } from "react-icons/md";
@@ -43,6 +35,8 @@ function TodoList() {
   };
 
   const deleteTodo = (id) => {
+    setInputValue('');
+    setEditingId('');
     const newTodos = todos.filter((ele) => ele.id !== id);
     setTodos([...newTodos]);
   };
@@ -82,37 +76,36 @@ function TodoList() {
         {row.name}
       </Table.Td>
       <Table.Td>
-        {/*-------pop hover mantine-----------*/}
-        <HoverCard width={280} shadow="md">
+        <HoverCard width={"target"} shadow="sm">
           <HoverCard.Target>
             <Button onClick={() => deleteTodo(row.id)} variant="danger">
               <Trash size={22} strokeWidth={2} color={"white"} />
             </Button>
           </HoverCard.Target>
           <HoverCard.Dropdown>
-            <Text size="sm">Delete this toDo</Text>
+            <Text size="sm">Delete</Text>
           </HoverCard.Dropdown>
         </HoverCard>
 
-        <HoverCard width={280} shadow="md">
+        <HoverCard width={"target"} shadow="sm">
           <HoverCard.Target>
-            <Button onClick={() => editTodo(row.id)} variant="edit">
+            <Button disabled={row.completed} onClick={() => editTodo(row.id)} variant="edit">
               <Edit size={22} strokeWidth={1.5} color={"white"} />
             </Button>
           </HoverCard.Target>
-          <HoverCard.Dropdown>
-            <Text size="sm">Edit this toDo</Text>
+          <HoverCard.Dropdown width={"auto"}>
+            <Text size="sm">Edit</Text>
           </HoverCard.Dropdown>
         </HoverCard>
 
-        <HoverCard width={280} shadow="md">
+        <HoverCard width={"target"} shadow="sm">
           <HoverCard.Target>
             <Button onClick={() => completeTodo(row.id)} variant="complete">
               <MdOutlineTaskAlt accentHeight={100} />
             </Button>
           </HoverCard.Target>
           <HoverCard.Dropdown>
-            <Text size="sm">Complete this toDo</Text>
+            <Text size="sm">Complete</Text>
           </HoverCard.Dropdown>
         </HoverCard>
       </Table.Td>
@@ -138,7 +131,7 @@ function TodoList() {
           labelProps={{ "data-floating": floating }}
         />
 
-        {editingId === null ? (
+        {!editingId  ? (
           <Button className="todo-add-btn" onClick={addTodo} variant="primary">
             Add Task
           </Button>
@@ -154,7 +147,7 @@ function TodoList() {
           h={300}
           onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
         >
-          <Table miw={700}>
+          <Table miw={700} horizontalSpacing="xl" verticalSpacing="md">
             <Table.Thead
               className={cx(tableClasses.header, {
                 [tableClasses.scrolled]: scrolled,
@@ -167,7 +160,17 @@ function TodoList() {
               </Table.Tr>
             </Table.Thead>
 
-            <Table.Tbody className="table-todos">{rows}</Table.Tbody>
+            <Table.Tbody className="table-todos">
+              {rows.length > 0 ? (
+                rows
+              ) : (
+                <Table.Tr>
+                  <Table.Td colSpan={3} style={{ textAlign: "center" }}>
+                    {"No task Available"}
+                  </Table.Td>
+                </Table.Tr>
+              )}
+            </Table.Tbody>
           </Table>
         </ScrollArea>
       </div>
